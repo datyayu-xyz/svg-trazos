@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Trazos animados con SVG</title>
+  <style>
+    pre {
+      width: 600px;
+      background-color: #333;
+      color: white;
+      padding: 1em;
+    }
+
+    input {
+      width: 500px;
+    }
+  </style>
+</head>
+<body>
+  <svg width="700px" height="273px" viewBox="0 0 526 273" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="trazo-container" stroke="#979797">
+        <path id="js-trazo-path" stroke="#333" stroke-width="5"
+         d="M391.184598,209.001458 C385.475341,215.328002 379.388587,221.617589 373.217299,227.959715 C360.579795,240.947059 338.722159,255.945459 320.165882,257.725624 C305.729227,259.110579 291.105564,258.052096 276.670311,256.652598 C219.864718,251.145293 174.156213,243.818909 145.26688,191.481058 C141.149214,184.02122 132.226497,161.182387 131.85828,150.828583 C129.744272,91.3853267 130.335678,73.3642952 177.647761,38.6804749 C210.20633,14.8122473 203.714451,18.407044 234.108358,18.407044 L238.949648,22.610433 C292.557034,22.610433 379.035402,47.4532877 410.912615,98.5502527 C438.871536,143.366467 420.628038,176.015283 392.460824,207.579411 C396.76891,207.207269 401.211847,206.112668 405.163055,207.652488 C408.710914,209.03512 410.326662,213.27895 412.51793,216.393002 C420.298517,227.450148 427.961858,238.606503 435.04725,250.121503 C491.024478,341.094286 446.142085,268.073107 473.96345,321.7143 C475.12435,323.952582 472.321523,316.946235 471.50056,314.562202 L391.184598,209.001458 L391.184598,209.001458 Z M214.439032,80.5284864 L213.433598,128.662571 L214.439032,80.5284864 L214.439032,80.5284864 Z M307.378286,76.4011386 L308.20629,142.514744 L307.378286,76.4011386 L307.378286,76.4011386 Z M177.575944,138.649316 C193.02315,178.97946 254.106591,190.15672 290.023993,191.945754 C305.285159,192.705908 348.111175,197.851757 355.846107,175.930631 L177.575944,138.649316 L177.575944,138.649316 Z M150.750296,204.581268 C107.884022,204.581268 82.1398681,275.961927 71.739256,307.317165 C67.8593678,319.014055 66.8979657,331.484187 64.4773206,343.567698 L150.750296,204.581268 L150.750296,204.581268 Z M391.184598,209.001458 C391.612165,208.527662 392.037615,208.053659 392.460824,207.579411 C391.697542,207.645346 390.938493,207.688601 390.187161,207.690509 L391.184598,209.001458 L391.184598,209.001458 Z M118.335618,308.884458 C118.335618,336.033014 113.034752,327.61121 121.871535,338.527856 L118.335618,308.884458 L118.335618,308.884458 Z M391.522107,305.977995 C391.522107,322.149971 390.79563,299.644273 400.968115,334.210405 C404.205687,345.211683 399.309617,342.592816 397.563159,337.353442 L391.522107,305.977995 L391.522107,305.977995 Z" >
+        </path>
+      </g>
+    </g>
+  </svg>
+
+  </br>
+  <div id="js-script-text"></div>
+
+  </br>
+  <input type="range" id="js-input-dasharray" min="0" value="0" />
+  </br>
+  <input type="range" id="js-input-dashoffset" min="0" value="0" />
+
+  <template id="js-code-template">
+    <pre><code>&lt;path stroke="#000" stroke-width="5" d="…"
+  stroke-dasharray="<span id="dasharray"></span>"
+  stroke-dashoffset="<span id="dashoffset"></span>"
+/&gt;</code></pre>
+  </template>
+
+  <script>
+    var path = document.getElementById('js-trazo-path');
+    var inputDA = document.getElementById('js-input-dasharray');
+    var inputDO = document.getElementById('js-input-dashoffset');
+    var template = document.getElementById('js-code-template');
+    var codeExample = document.getElementById('js-script-text');
+
+    // Set max value
+    var pathLength = path.getTotalLength();
+    inputDA.max = pathLength;
+    inputDO.max = pathLength;
+
+    // Paint defaults
+    updateTemplateSpan('dasharray', 0);
+    updateTemplateSpan('dashoffset', 0);
+
+    // Update dasharray
+    inputDA.addEventListener('input', function(evt) {
+      const value = evt.target.value;
+      const dasharrayValue = value + ' ' + value
+      path.style.strokeDasharray = dasharrayValue;
+
+      updateTemplateSpan('dasharray', dasharrayValue);
+    })
+
+    // Update dashoffsset
+    inputDO.addEventListener('input', function(evt) {
+      const dashoffset = evt.target.value;
+      path.style.strokeDashoffset = dashoffset;
+      updateTemplateSpan('dashoffset', dashoffset);
+    })
+
+    // Paint the updated template.
+    function updateTemplateSpan(spanId, value) {
+      var span = template.content.querySelector('#' + spanId);
+      span.textContent = value;
+
+      var clone = document.importNode(template.content, true);
+      codeExample.innerHTML = '';
+      codeExample.appendChild(clone);
+    }
+  </script>
+</body>
+</html>
